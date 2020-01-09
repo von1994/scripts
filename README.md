@@ -1,2 +1,2 @@
-# CD-scripts
-for CD scripts
+# scripts
+
