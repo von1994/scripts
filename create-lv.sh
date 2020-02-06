@@ -40,6 +40,8 @@ function mountLv(){
   lvName=$1
   mkdir -p $mountPath/$lvName
   echo "/dev/mapper/$vgName-$lvName	$mountPath/$lvName	xfs	defaults	0 0" >> /etc/fstab
+  mount -t xfs /dev/mapper/$vgName-$lvName $mountPath/$lvName
+  chmod -R 777 $mountPath/$lvName
 }
 
 for n in $(seq 1 $smallNum)
@@ -71,6 +73,6 @@ do
 done
 
 #挂载所有
-mount -a
+#mount -a
 
 
