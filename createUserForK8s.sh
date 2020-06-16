@@ -97,7 +97,7 @@ function createRole(){
     error "Role ${USER_NAME} already exists."
   elif [ $? -eq 0 ]
   then
-    kubectl create role ${USER_NAME} --verb="*" --resource="*" -n ${USER_NAMESPACE}
+    kubectl create role ${USER_NAME} --verb="*" --resource="pods,pods/status,pods/exec" -n ${USER_NAMESPACE}
     if [ $? -ne 0 ]
     then
       error "Creating role ${USER_NAME} failed."
