@@ -76,10 +76,11 @@ function checkResourceExist(){
 
 function createServiceaccount(){
   checkResourceExist "serviceaccount" ${SERVICE_ACCOUNT_NAME} ${USER_NAMESPACE}
-  if [ $? -eq 1 ] && ! ${FORCE}
+  EXIST=$?
+  if [ $EXIST -eq 1 ] && ! ${FORCE}
   then
     error "ServiceAccount ${SERVICE_ACCOUNT_NAME} already exists."
-  elif [ $? -eq 0 ]
+  elif [ $EXIST -eq 0 ]
   then
     kubectl create serviceaccount ${SERVICE_ACCOUNT_NAME} -n ${USER_NAMESPACE}
     if [ $? -ne 0 ]
@@ -92,12 +93,13 @@ function createServiceaccount(){
 
 function createRole(){
   checkResourceExist "role" ${USER_NAME} ${USER_NAMESPACE}
-  if [ $? -eq 1 ] && ! ${FORCE}
+  EXIST=$?
+  if [ $EXIST -eq 1 ] && ! ${FORCE}
   then
     error "Role ${USER_NAME} already exists."
-  elif [ $? -eq 0 ]
+  elif [ $EXIST -eq 0 ]
   then
-    kubectl create role ${USER_NAME} --verb="*" --resource="pods,pods/status,pods/exec" -n ${USER_NAMESPACE}
+    kubectl create role ${USER_NAME} --verb="*" --resource="pods,pods/status,pods/exec,pods/log" -n ${USER_NAMESPACE}
     if [ $? -ne 0 ]
     then
       error "Creating role ${USER_NAME} failed."
@@ -108,12 +110,13 @@ function createRole(){
 
 function createRolebinding(){
   checkResourceExist "rolebinding" ${USER_NAME} ${USER_NAMESPACE}
-  if [ $? -eq 1 ] && ! ${FORCE}
+  EXIST=$?
+  if [ $EXIST -eq 1 ] && ! ${FORCE}
   then
     error "Rolebinding ${USER_NAME} already exists."
-  elif [ $? -eq 0 ]
+  elif [ $EXIST -eq 0 ]
   then
-    kubectl create rolebinding ${USER_NAME} --role=${USER_NAME} --serviceaccount==${USER_NAMESPACE}:${SERVICE_ACCOUNT_NAME} -n ${USER_NAMESPACE}
+    kubectl create rolebinding ${USER_NAME} --role=${USER_NAME} --serviceaccount=${USER_NAMESPACE}:${SERVICE_ACCOUNT_NAME} -n ${USER_NAMESPACE}
     if [ $? -ne 0 ]
     then
       error "Creating rolebinding ${USER_NAME} failed."
